@@ -2,6 +2,6 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
-namespace window_utils {
-    void placeWindowOnScreen(sf::RenderWindow& window);
+namespace utils {
+	void placeWindowOnScreen(sf::RenderWindow& window);
 } // namespace window_utils

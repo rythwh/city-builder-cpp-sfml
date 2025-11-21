@@ -3,6 +3,7 @@ project(citybuilder LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
 
@@ -13,6 +14,8 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(SFML)
+
+
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
@@ -25,4 +28,9 @@ target_link_libraries(citybuilder
         SFML::Graphics
         SFML::Window
         SFML::System
+)
+
+target_include_directories(citybuilder
+	PRIVATE
+		${CMAKE_CURRENT_SOURCE_DIR}/src
 )
