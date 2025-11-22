@@ -3,6 +3,7 @@
 #include "renderer.hpp"
 #include "world/map.hpp"
 #include "world/camera.hpp"
+#include "constants.hpp"
 
 using namespace world;
 using namespace sf;
@@ -21,12 +22,13 @@ namespace render {
 		window.display();
 	}
 	
+	/// @attention: Only draw objects in world-space
 	void Renderer::drawMap() {
 
 		Vector2f cameraPos = camera.getPosition();
 		float cameraZoom = camera.getZoom();
 
-		const float tileSize = 32.f; // Size of each tile in pixels
+		const float tileSize = TILE_SIZE; // Size of each tile in pixels
 		RectangleShape tileShape(Vector2f(tileSize, tileSize) * cameraZoom);
 
 		for (int y = 0; y < map.getSize().y; ++y) {
@@ -45,14 +47,10 @@ namespace render {
 						break;
 				}
 
-				Vector2f tileWorldPos{
+				tileShape.setPosition({
 					static_cast<float>(x) * tileSize,
 					static_cast<float>(y) * tileSize
-				};
-
-				Vector2f tileScreenPos = (tileWorldPos - cameraPos);
-
-				tileShape.setPosition(tileScreenPos);
+				});
 
 				window.draw(tileShape);
 			}

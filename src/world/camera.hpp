@@ -13,6 +13,7 @@ namespace world {
 
 		void setPosition(float x, float y);
 		void move(float deltaX, float deltaY);
+		void setZoom(float newZoom);
 
 		const Vector2f& getPosition() const;
 		const float getZoom() const { return zoom; }
