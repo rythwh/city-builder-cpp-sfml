@@ -13,7 +13,14 @@ namespace world {
 		Map(int width, int height);
 
 		void generateTerrain();
-		Tile& getTile(int x, int y);
+
+		/// @brief Return a modifiable Tile pointer at (x, y)
+		/// @return nullptr if out of bounds, else pointer to Tile
+		Tile* getTile(int x, int y);
+
+		/// @brief Return a read-only Tile pointer at (x, y)
+		/// @return nullptr if out of bounds, else pointer to Tile
+		const Tile* getTile(int x, int y) const;
 		
 		const Vector2i getSize() const { 
 			return size; 

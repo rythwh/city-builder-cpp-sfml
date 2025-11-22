@@ -13,12 +13,12 @@ namespace render {
 		Renderer(RenderWindow& window, const Map& map, const Camera& camera);
 		void renderFrame();
 	private:
-
 		RenderWindow& window;
 		const Map& map;
 		const Camera& camera;
 
 		void drawMap();
+		void visualiseHeightmap(RectangleShape& tileShape, const Tile& tile);
 		void drawBuildings();
 	};
 } // namespace render

@@ -9,5 +9,5 @@ constexpr int WINDOW_WIDTH = 1920u;
 constexpr int WINDOW_HEIGHT = 1080u;
 constexpr int FRAME_RATE_LIMIT = 144;
 
-constexpr int MAP_WIDTH = 50;
-constexpr int MAP_HEIGHT = 30;
+constexpr int MAP_WIDTH = 100;
+constexpr int MAP_HEIGHT = 100;

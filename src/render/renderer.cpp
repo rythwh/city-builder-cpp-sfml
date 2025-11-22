@@ -25,17 +25,18 @@ namespace render {
 	/// @attention: Only draw objects in world-space
 	void Renderer::drawMap() {
 
-		Vector2f cameraPos = camera.getPosition();
-		float cameraZoom = camera.getZoom();
-
 		const float tileSize = TILE_SIZE; // Size of each tile in pixels
-		RectangleShape tileShape(Vector2f(tileSize, tileSize) * cameraZoom);
+		RectangleShape tileShape(Vector2f(tileSize, tileSize));
 
 		for (int y = 0; y < map.getSize().y; ++y) {
 			for (int x = 0; x < map.getSize().x; ++x) {
-				const Tile& tile = const_cast<Map&>(map).getTile(x, y);
+				const Tile* tilePtr = map.getTile(x, y);
+				if (tilePtr == nullptr) {
+					continue;
+				}
+				const Tile& tile = *tilePtr;
 
-				switch (tile.type) {
+				switch (tile.getType()) {
 					case TileType::Ground:
 						tileShape.setFillColor(Color(34, 139, 34)); // Green
 						break;
@@ -55,6 +56,16 @@ namespace render {
 				window.draw(tileShape);
 			}
 		}
+	}
+
+	/// @brief Debug function to visualise heightmap, should be called from drawMap()
+	void Renderer::visualiseHeightmap(RectangleShape& tileShape, const Tile& tile) {
+		// Greyscale heightmap visualisation
+		int height = tile.getHeight();
+		tileShape.setFillColor(Color(
+			(height + 2) * (255 / 4.f),
+			(height + 2) * (255 / 4.f),
+			(height + 2) * (255 / 4.f)));
 	}
 	
 	void Renderer::drawBuildings() {
