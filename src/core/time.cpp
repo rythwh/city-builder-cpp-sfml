@@ -10,4 +10,4 @@ namespace core {
 		Time dt = clock.restart();
 		deltaTime = dt.asSeconds();
 	}
-} // namespace core
+}

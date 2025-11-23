@@ -17,4 +17,4 @@ private:
 	Clock clock{};
 	float deltaTime{0.f};
 };
-} // namespace core
+}

@@ -53,4 +53,4 @@ namespace world {
 		view.setCenter(position);
 		return view;
 	}
-} // namespace world
+}

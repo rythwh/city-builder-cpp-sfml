@@ -69,4 +69,4 @@ namespace world {
 		}
 		return &tiles[y * size.x + x];
 	}
-} // namespace world
+}

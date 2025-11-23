@@ -42,5 +42,6 @@ private:
 
 	void processMovementInput();
 	void processInput(std::optional<Event> inputEvent);
+	void processMouseClick(std::optional<Event> inputEvent);
 };
-} // namespace core
+}

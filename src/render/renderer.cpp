@@ -5,21 +5,25 @@
 #include "world/map.hpp"
 #include "world/camera.hpp"
 #include "constants.hpp"
+#include "ui/ui_manager.hpp"
 
 using namespace world;
 using namespace sf;
+using namespace ui;
 
 namespace render {
 	Renderer::Renderer(
 		RenderWindow& window,
 		const Map& map,
 		const Camera& camera,
-		const InputManager& inputManager
+		const InputManager& inputManager,
+		const UiManager& uiManager
 	) : 
 		window(window),
 		map(map),
 		camera(camera),
-		inputManager(inputManager)
+		inputManager(inputManager),
+		uiManager(uiManager)
 	{}
 
 	void Renderer::renderFrame() {
@@ -28,6 +32,7 @@ namespace render {
 		drawMap();
 		drawBuildings();
 		drawMouseHoverTile();
+		drawUi();
 		window.display();
 	}
 	
@@ -81,7 +86,7 @@ namespace render {
 		// Implementation for drawing buildings
 	}
 
-	void Renderer::drawMouseHoverTile() {
+	void Renderer::drawMouseHoverTile() const {
 		const Tile* tilePtr = inputManager.getMouseHoverTile();
 		if (tilePtr == nullptr) {
 			return;
@@ -96,4 +101,9 @@ namespace render {
 		));
 		window.draw(hoverShape);
 	}
-} // namespace render
+
+	void Renderer::drawUi() const {
+		window.setView(window.getDefaultView());
+		uiManager.draw(window);
+	}
+}

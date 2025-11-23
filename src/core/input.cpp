@@ -39,22 +39,21 @@ namespace core {
 	}
 
 	void InputManager::processMovementInput() {
-		const float cameraSpeed = 300.f;
 		float deltaTime = timeManager.getDeltaTime();
 		float zoom = camera.getZoom();
 
 		Vector2f movementDelta{0.f, 0.f};
 		if (Keyboard::isKeyPressed(Keyboard::Scan::W)) {
-			movementDelta.y -= cameraSpeed;
+			movementDelta.y -= CAMERA_SPEED;
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Scan::S)) {
-			movementDelta.y += cameraSpeed;
+			movementDelta.y += CAMERA_SPEED;
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Scan::A)) {
-			movementDelta.x -= cameraSpeed;
+			movementDelta.x -= CAMERA_SPEED;
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Scan::D)) {
-			movementDelta.x += cameraSpeed;
+			movementDelta.x += CAMERA_SPEED;
 		}
 		movementDelta *= zoom * deltaTime;
 		camera.move(movementDelta);
@@ -100,6 +99,10 @@ namespace core {
 				camera.setZoom(newZoom);
 			}
 		}
+		
+	}
+
+	void InputManager::processMouseClick(std::optional<Event> inputEvent) {
 		if (const auto* mouseButton = inputEvent->getIf<Event::MouseButtonPressed>())
 		{
 			if (mouseButton->button == Mouse::Button::Left)
@@ -163,4 +166,4 @@ namespace core {
 			static_cast<const InputManager*>(this)->getMouseHoverTile()
 		);
 	}
-} // namespace core
+}

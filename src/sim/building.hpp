@@ -1,12 +1,15 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include "building_prefab.hpp"
+#include "world/tile.hpp"
 
-using namespace sf;
+using namespace world;
 
 namespace sim {
 	struct Building {
-		int typeId;
-		Vector2i position; // Position in tiles (x, y)
+		const BuildingPrefab& prefab;
+		BuildingDensity density;
+		BuildingLevel level;
+		Tile& tile;
 	};
 }

@@ -30,4 +30,4 @@ namespace world {
 		Vector2i size;
 		std::vector<Tile> tiles;
 	};
-} // namespace world
+}

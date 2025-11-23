@@ -29,8 +29,9 @@ int main()
 	StateManager stateManager{};
 	TimeManager timeManager{};
 	InputManager inputManager(stateManager, window, camera, map, timeManager);
+	UiManager uiManager(window.getSize());
 
-	Renderer renderer(window, map, camera, inputManager);
+	Renderer renderer(window, map, camera, inputManager, uiManager);
 
 	while (window.isOpen())
 	{

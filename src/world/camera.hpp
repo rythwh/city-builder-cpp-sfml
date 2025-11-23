@@ -23,4 +23,4 @@ namespace world {
 		Vector2f position;
 		float zoom;
 	};
-} // namespace world
+}

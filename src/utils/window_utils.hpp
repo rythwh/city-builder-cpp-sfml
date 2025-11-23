@@ -4,4 +4,4 @@
 
 namespace utils {
 	void placeWindowOnScreen(sf::RenderWindow& window);
-} // namespace window_utils
+}

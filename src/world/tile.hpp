@@ -32,4 +32,4 @@ namespace world {
 		float height;
 		int buildingId{-1}; // -1 if no building
 	};
-} // namespace world
+}
