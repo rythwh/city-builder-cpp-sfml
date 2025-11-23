@@ -9,8 +9,16 @@ using namespace world;
 using namespace sf;
 
 namespace render {
-	Renderer::Renderer(RenderWindow& window, const Map& map, const Camera& camera)
-		: window(window), map(map), camera(camera)
+	Renderer::Renderer(
+		RenderWindow& window,
+		const Map& map,
+		const Camera& camera,
+		const InputManager& inputManager
+	)
+		: window(window),
+		map(map),
+		camera(camera),
+		inputManager(inputManager)
 	{
 	}
 
@@ -19,6 +27,7 @@ namespace render {
 		window.setView(camera.createView(window));
 		drawMap();
 		drawBuildings();
+		drawMouseHoverTile();
 		window.display();
 	}
 	
@@ -70,5 +79,21 @@ namespace render {
 	
 	void Renderer::drawBuildings() {
 		// Implementation for drawing buildings
+	}
+
+	void Renderer::drawMouseHoverTile() {
+		const Tile* tilePtr = inputManager.getMouseHoverTile(window, camera, map);
+		if (tilePtr == nullptr) {
+			return;
+		}
+		const Tile& tile = *tilePtr;
+
+		RectangleShape hoverShape(Vector2f(TILE_SIZE, TILE_SIZE));
+		hoverShape.setFillColor(Color(0, 0, 0, 100)); // Semi-transparent black
+		hoverShape.setPosition(Vector2f(
+			tile.getPosition().x * TILE_SIZE,
+			tile.getPosition().y * TILE_SIZE
+		));
+		window.draw(hoverShape);
 	}
 } // namespace render

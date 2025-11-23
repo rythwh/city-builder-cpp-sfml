@@ -11,6 +11,8 @@ using namespace sf;
 using namespace world;
 
 namespace core {
+class InputManager {
+public:
 	void processInput(
 		std::optional<Event> inputEvent,
 		core::GameState& state,
@@ -19,15 +21,22 @@ namespace core {
 		Map& map
 	);
 
-	const Tile* mouseHoverTile(
+	const Tile* getMouseHoverTile(
 		const RenderWindow& window,
 		const Camera& camera,
 		const Map& map
-	);
+	) const;
 
-	Tile* mouseHoverTile(
+	Tile* getMouseHoverTile(
 		const RenderWindow& window,
 		const Camera& camera,
 		Map& map
 	);
-}
+
+	void reset() {
+		cachedMouseHoverTile = nullptr;
+	}
+private:
+	Tile* cachedMouseHoverTile = nullptr;
+};
+} // namespace core

@@ -21,11 +21,13 @@ int main()
 	utils::placeWindowOnScreen(window);
 
 	Vector2i mapSize{MAP_WIDTH, MAP_HEIGHT};
+	
 	Map map(mapSize.x, mapSize.y);
 	Camera camera(mapSize);
 	core::GameState gameState{};
+	InputManager inputManager{};
 
-	Renderer renderer(window, map, camera);
+	Renderer renderer(window, map, camera, inputManager);
 
 	while (window.isOpen())
 	{
@@ -37,9 +39,11 @@ int main()
 				window.close();
 			}
 
-			processInput(event, gameState, window, camera, map);
+			inputManager.processInput(event, gameState, window, camera, map);
 		}
 
 		renderer.renderFrame();
+
+		inputManager.reset();
 	}
 }

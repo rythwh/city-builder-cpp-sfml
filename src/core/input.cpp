@@ -14,7 +14,8 @@ using namespace sf;
 using namespace world;
 
 namespace core {
-	void processInput(
+
+	void InputManager::processInput(
 		std::optional<Event> inputEvent,
 		core::GameState& gameState,
 		RenderWindow& window,
@@ -76,7 +77,7 @@ namespace core {
 		{
 			if (mouseButton->button == Mouse::Button::Left)
 			{
-				Tile* tilePtr = mouseHoverTile(window, camera, map);
+				Tile* tilePtr = getMouseHoverTile(window, camera, map);
 				if (tilePtr == nullptr) {
 					return;
 				}
@@ -101,11 +102,15 @@ namespace core {
 		}
 	}
 
-	const Tile* mouseHoverTile(
+	const Tile* InputManager::getMouseHoverTile(
 		const RenderWindow& window,
 		const Camera& camera,
-		const Map& map)
+		const Map& map) const
 	{
+		if (cachedMouseHoverTile != nullptr) {
+			return cachedMouseHoverTile;
+		}
+
 		Vector2i mousePos = Mouse::getPosition(window);
 		Vector2f worldPos = window.mapPixelToCoords(mousePos, camera.createView(window));
 
@@ -129,13 +134,13 @@ namespace core {
 		return map.getTile(tileX, tileY);
 	}
 
-	Tile* mouseHoverTile(
+	Tile* InputManager::getMouseHoverTile(
 		const RenderWindow& window,
 		const Camera& camera,
 		Map& map
 	) {
 		return const_cast<Tile*>(
-			mouseHoverTile(
+			getMouseHoverTile(
 				window,
 				camera,
 				const_cast<const Map&>(map)
