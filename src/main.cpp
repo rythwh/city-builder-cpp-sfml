@@ -8,6 +8,7 @@
 #include "constants.hpp"
 #include "core/input.hpp"
 #include "core/state.hpp"
+#include "core/time.hpp"
 
 using namespace world;
 using namespace render;
@@ -21,16 +22,20 @@ int main()
 	utils::placeWindowOnScreen(window);
 
 	Vector2i mapSize{MAP_WIDTH, MAP_HEIGHT};
-	
-	Map map(mapSize.x, mapSize.y);
+
+	Map map(mapSize);
 	Camera camera(mapSize);
-	core::GameState gameState{};
-	InputManager inputManager{};
+
+	StateManager stateManager{};
+	TimeManager timeManager{};
+	InputManager inputManager(stateManager, window, camera, map, timeManager);
 
 	Renderer renderer(window, map, camera, inputManager);
 
 	while (window.isOpen())
 	{
+		timeManager.calculateDeltaTime();
+
 		while (const std::optional<Event> event = window.pollEvent())
 		{
 			// Close window with X-button
@@ -39,7 +44,7 @@ int main()
 				window.close();
 			}
 
-			inputManager.processInput(event, gameState, window, camera, map);
+			inputManager.update(event);
 		}
 
 		renderer.renderFrame();

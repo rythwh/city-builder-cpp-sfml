@@ -12,7 +12,7 @@ namespace world {
 		Camera(Vector2i mapSize);
 
 		void setPosition(float x, float y);
-		void move(float deltaX, float deltaY);
+		void move(Vector2f delta);
 		void setZoom(float newZoom);
 
 		const Vector2f& getPosition() const;

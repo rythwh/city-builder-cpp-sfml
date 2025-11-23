@@ -1,6 +1,7 @@
+#include "renderer.hpp"
+
 #include <SFML/Graphics.hpp>
 
-#include "renderer.hpp"
 #include "world/map.hpp"
 #include "world/camera.hpp"
 #include "constants.hpp"
@@ -14,13 +15,12 @@ namespace render {
 		const Map& map,
 		const Camera& camera,
 		const InputManager& inputManager
-	)
-		: window(window),
+	) : 
+		window(window),
 		map(map),
 		camera(camera),
 		inputManager(inputManager)
-	{
-	}
+	{}
 
 	void Renderer::renderFrame() {
 		window.clear();
@@ -82,7 +82,7 @@ namespace render {
 	}
 
 	void Renderer::drawMouseHoverTile() {
-		const Tile* tilePtr = inputManager.getMouseHoverTile(window, camera, map);
+		const Tile* tilePtr = inputManager.getMouseHoverTile();
 		if (tilePtr == nullptr) {
 			return;
 		}

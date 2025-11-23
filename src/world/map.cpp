@@ -1,18 +1,18 @@
+#include "map.hpp"
+
 #include <vector>
 #include <cmath>
 #include <SFML/System/Vector2.hpp>
 #include <iostream>
 #include <ctime>
 
-#include "map.hpp"
 #include "tile.hpp"
 
 using namespace sf;
 
 namespace world {
-	Map::Map(int width, int height) {
-		size = Vector2i(width, height);
-		tiles.resize(width * height);
+	Map::Map(Vector2i size) : size(size) {
+		tiles.resize(size.x * size.y);
 
 		generateTerrain();
 	}

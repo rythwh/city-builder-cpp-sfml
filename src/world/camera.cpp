@@ -1,5 +1,7 @@
-#include <SFML/Graphics.hpp>
 #include "camera.hpp"
+
+#include <SFML/Graphics.hpp>
+
 #include "constants.hpp"
 
 using namespace world;
@@ -15,9 +17,21 @@ namespace world {
 		position = Vector2f(x, y);
 	}
 
-	void Camera::move(float deltaX, float deltaY) {
-		position.x += deltaX;
-		position.y += deltaY;
+	void Camera::move(Vector2f delta) {
+		position += delta;
+		
+		if (position.x < 0.f) {
+			position.x = 0.f;
+		}
+		if (position.y < 0.f) {
+			position.y = 0.f;
+		}
+		if (position.x > MAP_WIDTH * TILE_SIZE) {
+			position.x = MAP_WIDTH * TILE_SIZE;
+		}
+		if (position.y > MAP_HEIGHT * TILE_SIZE) {
+			position.y = MAP_HEIGHT * TILE_SIZE;
+		}
 	}
 
 	const Vector2f& Camera::getPosition() const {

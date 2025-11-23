@@ -3,25 +3,64 @@
 #include <optional>
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Time.hpp>
 
 #include "state.hpp"
 #include "constants.hpp"
 #include "world/tile.hpp"
 #include "world/map.hpp"
 #include "world/camera.hpp"
+#include "core/time.hpp"
 
 using namespace sf;
 using namespace world;
 
 namespace core {
 
-	void InputManager::processInput(
-		std::optional<Event> inputEvent,
-		core::GameState& gameState,
+	InputManager::InputManager(
+		StateManager& stateManager,
 		RenderWindow& window,
 		Camera& camera,
-		Map& map
-	) {
+		Map& map,
+		TimeManager& timeManager
+	) : 
+		stateManager(stateManager),
+		window(window),
+		camera(camera),
+		map(map),
+		timeManager(timeManager)
+	{
+		update(std::nullopt);
+	};
+
+	void InputManager::update(std::optional<Event> inputEvent) {
+		processMovementInput();
+		processInput(inputEvent);
+	}
+
+	void InputManager::processMovementInput() {
+		const float cameraSpeed = 300.f;
+		float deltaTime = timeManager.getDeltaTime();
+		float zoom = camera.getZoom();
+
+		Vector2f movementDelta{0.f, 0.f};
+		if (Keyboard::isKeyPressed(Keyboard::Scan::W)) {
+			movementDelta.y -= cameraSpeed;
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Scan::S)) {
+			movementDelta.y += cameraSpeed;
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Scan::A)) {
+			movementDelta.x -= cameraSpeed;
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Scan::D)) {
+			movementDelta.x += cameraSpeed;
+		}
+		movementDelta *= zoom * deltaTime;
+		camera.move(movementDelta);
+	}
+
+	void InputManager::processInput(std::optional<Event> inputEvent) {
 		if (const auto* keyPressed = inputEvent->getIf<Event::KeyPressed>())
 		{
 			switch (keyPressed->scancode)
@@ -29,37 +68,25 @@ namespace core {
 			case Keyboard::Scan::Escape:
 				window.close();
 				break;
-			case Keyboard::Scan::W:
-				camera.move(0.f, -10.f);
-				break;
-			case Keyboard::Scan::S:
-				camera.move(0.f, 10.f);
-				break;
-			case Keyboard::Scan::A:
-				camera.move(-10.f, 0.f);
-				break;
-			case Keyboard::Scan::D:
-				camera.move(10.f, 0.f);
-				break;
 			case Keyboard::Scan::R:
-				if (gameState.getMode() == GameState::Mode::Road) {
-					gameState.setMode(GameState::Mode::None);
+				if (stateManager.getMode() == StateManager::Mode::Road) {
+					stateManager.setMode(StateManager::Mode::None);
 				} else {
-					gameState.setMode(GameState::Mode::Road);
+					stateManager.setMode(StateManager::Mode::Road);
 				}
 				break;
 			case Keyboard::Scan::B:
-				if (gameState.getMode() == GameState::Mode::Build) {
-					gameState.setMode(GameState::Mode::None);
+				if (stateManager.getMode() == StateManager::Mode::Build) {
+					stateManager.setMode(StateManager::Mode::None);
 				} else {
-					gameState.setMode(GameState::Mode::Build);
+					stateManager.setMode(StateManager::Mode::Build);
 				}
 				break;
 			case Keyboard::Scan::Z:
-				if (gameState.getMode() == GameState::Mode::Demolish) {
-					gameState.setMode(GameState::Mode::None);
+				if (stateManager.getMode() == StateManager::Mode::Demolish) {
+					stateManager.setMode(StateManager::Mode::None);
 				} else {
-					gameState.setMode(GameState::Mode::Demolish);
+					stateManager.setMode(StateManager::Mode::Demolish);
 				}
 				break;
 			}
@@ -77,21 +104,21 @@ namespace core {
 		{
 			if (mouseButton->button == Mouse::Button::Left)
 			{
-				Tile* tilePtr = getMouseHoverTile(window, camera, map);
+				Tile* tilePtr = getMouseHoverTile();
 				if (tilePtr == nullptr) {
 					return;
 				}
 				Tile& tile = *tilePtr;
 
 				// Handle left-click on tile based on current mode
-					switch (gameState.getMode()) {
-						case GameState::Mode::Road:
+					switch (stateManager.getMode()) {
+						case StateManager::Mode::Road:
 							std::cout << "Place road at (" << tile.getPosition().x << ", " << tile.getPosition().y << ")" << std::endl;
 							break;
-						case GameState::Mode::Build:
+						case StateManager::Mode::Build:
 							std::cout << "Place building at (" << tile.getPosition().x << ", " << tile.getPosition().y << ")" << std::endl;
 							break;
-						case GameState::Mode::Demolish:
+						case StateManager::Mode::Demolish:
 							std::cout << "Demolish object at (" << tile.getPosition().x << ", " << tile.getPosition().y << ")" << std::endl;
 							break;
 						default:
@@ -102,10 +129,7 @@ namespace core {
 		}
 	}
 
-	const Tile* InputManager::getMouseHoverTile(
-		const RenderWindow& window,
-		const Camera& camera,
-		const Map& map) const
+	const Tile* InputManager::getMouseHoverTile() const
 	{
 		if (cachedMouseHoverTile != nullptr) {
 			return cachedMouseHoverTile;
@@ -134,17 +158,9 @@ namespace core {
 		return map.getTile(tileX, tileY);
 	}
 
-	Tile* InputManager::getMouseHoverTile(
-		const RenderWindow& window,
-		const Camera& camera,
-		Map& map
-	) {
+	Tile* InputManager::getMouseHoverTile() {
 		return const_cast<Tile*>(
-			getMouseHoverTile(
-				window,
-				camera,
-				const_cast<const Map&>(map)
-			)
+			static_cast<const InputManager*>(this)->getMouseHoverTile()
 		);
 	}
 } // namespace core

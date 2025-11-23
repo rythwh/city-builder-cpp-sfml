@@ -6,6 +6,7 @@
 #include "world/tile.hpp"
 #include "world/map.hpp"
 #include "world/camera.hpp"
+#include "core/time.hpp"
 
 using namespace sf;
 using namespace world;
@@ -13,30 +14,33 @@ using namespace world;
 namespace core {
 class InputManager {
 public:
-	void processInput(
-		std::optional<Event> inputEvent,
-		core::GameState& state,
+
+	InputManager(
+		StateManager& stateManager,
 		RenderWindow& window,
 		Camera& camera,
-		Map& map
+		Map& map,
+		TimeManager& timeManager
 	);
 
-	const Tile* getMouseHoverTile(
-		const RenderWindow& window,
-		const Camera& camera,
-		const Map& map
-	) const;
+	void update(std::optional<Event> inputEvent);
 
-	Tile* getMouseHoverTile(
-		const RenderWindow& window,
-		const Camera& camera,
-		Map& map
-	);
+	const Tile* getMouseHoverTile() const;
+	Tile* getMouseHoverTile();
 
 	void reset() {
 		cachedMouseHoverTile = nullptr;
 	}
 private:
 	Tile* cachedMouseHoverTile = nullptr;
+
+	StateManager& stateManager;
+	RenderWindow& window;
+	Camera& camera;
+	Map& map;
+	TimeManager& timeManager;
+
+	void processMovementInput();
+	void processInput(std::optional<Event> inputEvent);
 };
 } // namespace core

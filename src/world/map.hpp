@@ -1,8 +1,9 @@
 #pragma once
 
 #include <vector>
-#include "tile.hpp"
 #include <SFML/System/Vector2.hpp>
+
+#include "tile.hpp"
 
 using namespace sf;
 
@@ -10,7 +11,7 @@ namespace world {
 	class Map
 	{
 	public:
-		Map(int width, int height);
+		Map(Vector2i size);
 
 		void generateTerrain();
 

@@ -1,7 +1,7 @@
 #pragma once
 
 namespace core {
-	class GameState
+	class StateManager
 	{
 	public:
 		enum class PlayState {
@@ -16,7 +16,7 @@ namespace core {
 			Demolish
 		};
 
-		GameState() : currentPlayState(PlayState::Playing), currentMode(Mode::None) {}
+		StateManager() : currentPlayState(PlayState::Playing), currentMode(Mode::None) {}
 
 		PlayState getPlayState() const { return currentPlayState; }
 		void setPlayState(PlayState newPlayState) { currentPlayState = newPlayState; }
