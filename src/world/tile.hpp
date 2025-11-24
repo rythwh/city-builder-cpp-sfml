@@ -27,12 +27,36 @@ namespace world {
 		const Vector2i& getPosition() const { return position; }
 		void setPosition(int x, int y) { position = {x, y}; }
 
-		const Building* getBuilding() const { return building; }
-		void setBuilding(Building& newBuilding) { building = &newBuilding; }
+		void setBuilding(const Building& newBuilding) {
+			building.emplace(newBuilding);
+		}
+
+		void clearBuilding() {
+			building.reset();
+		}
+
+		bool hasBuilding() const {
+			return building.has_value();
+		}
+
+		const Building* getBuilding() const {
+			if (!building.has_value()) {
+				return nullptr;
+			}
+			return &building.value();
+		}
+
+		Building* getBuilding() {
+			if (!building.has_value()) {
+				return nullptr;
+			}
+			return &building.value();
+		}
 	private:
 		TileType type;
 		Vector2i position;
 		float height;
-		Building* building = nullptr;
+
+		std::optional<Building> building;
 	};
 }

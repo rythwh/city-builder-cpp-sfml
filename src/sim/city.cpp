@@ -7,7 +7,7 @@ namespace sim {
 
 	}
 
-	void City::placeBuilding(Building& building, Tile& tile) {
+	void City::placeBuilding(const Building& building, Tile& tile) {
 		tile.setBuilding(building);
 	}
 

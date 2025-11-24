@@ -9,7 +9,7 @@ namespace sim {
 	public:
 		City();
 
-		void placeBuilding(Building& building, Tile& tile);
+		void placeBuilding(const Building& building, Tile& tile);
 		void removeBuilding(Tile& tile);
 	private:
 		int population{0};

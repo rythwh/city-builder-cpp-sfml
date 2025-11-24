@@ -79,7 +79,7 @@ namespace render {
 				}
 				const Building& building = *buildingPtr;
 
-				buildingShape.setFillColor(building.prefab.buildingCategory.color * Color(0,0,0,static_cast<int>(building.level)));
+				buildingShape.setFillColor(building.prefab.buildingCategory.color);
 				buildingShape.setPosition(tileShape.getPosition());
 
 				window.draw(buildingShape);

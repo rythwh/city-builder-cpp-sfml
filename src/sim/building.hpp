@@ -3,9 +3,10 @@
 #include "building_prefab.hpp"
 
 namespace sim {
-	struct Building {
+	class Building {
+	public:
 		Building(
-			const BuildingPrefab &prefab,
+			const BuildingPrefab& prefab,
 			BuildingDensity density,
 			BuildingLevel level
 		):
@@ -13,7 +14,6 @@ namespace sim {
 			density(density),
 			level(level)
 		{
-
 		}
 
 		const BuildingPrefab& prefab;
