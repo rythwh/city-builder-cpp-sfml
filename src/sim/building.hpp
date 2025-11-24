@@ -16,6 +16,7 @@ namespace sim {
 		{
 		}
 
+		const long long id{(std::time(nullptr))};
 		const BuildingPrefab& prefab;
 		BuildingDensity density;
 		BuildingLevel level;

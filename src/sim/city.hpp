@@ -14,5 +14,7 @@ namespace sim {
 	private:
 		int population{0};
 		int funds{100000}; // Starting funds
+
+		std::vector<Building> buildings;
 	};
 }
