@@ -21,15 +21,15 @@ int main()
 	window.setFramerateLimit(FRAME_RATE_LIMIT);
 	utils::placeWindowOnScreen(window);
 
-	Vector2i mapSize{MAP_WIDTH, MAP_HEIGHT};
+	constexpr Vector2i mapSize{MAP_WIDTH, MAP_HEIGHT};
 
 	Map map(mapSize);
 	Camera camera(mapSize);
 
 	StateManager stateManager{};
 	TimeManager timeManager{};
-	InputManager inputManager(stateManager, window, camera, map, timeManager);
 	UiManager uiManager(window.getSize());
+	InputManager inputManager(stateManager, window, camera, map, timeManager, uiManager);
 
 	Renderer renderer(window, map, camera, inputManager, uiManager);
 
@@ -49,7 +49,5 @@ int main()
 		}
 
 		renderer.renderFrame();
-
-		inputManager.reset();
 	}
 }

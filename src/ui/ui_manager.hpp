@@ -22,6 +22,8 @@ namespace ui {
 
 		void draw(RenderTarget& target) const;
 
+		string_view clickedElement(Vector2i mousePos) const;
+
 	private:
 		vector<unique_ptr<UiElement>> elements;
 	};

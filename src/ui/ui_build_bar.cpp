@@ -9,14 +9,14 @@ using namespace sf;
 
 namespace ui {
 	UiBuildBar::UiBuildBar(const Vector2u windowSize) {
-		background.setSize(Vector2f(static_cast<float>(windowSize.x), 25.f));
+		background.setSize(Vector2f(static_cast<float>(windowSize.x), 50.f));
 		background.setFillColor(Color(50, 50, 50, 200));
-		background.setPosition({0.f, static_cast<float>(windowSize.y) - 25.f});
+		background.setPosition({0.f, static_cast<float>(windowSize.y) - 50.f});
 
 		int buttonIndex = 0;
 		for (auto [buildingCategory, name, colour] : sim::buildingCategories) {
 			constexpr Vector2i buttonSize{100, 25};
-			const Vector2i buttonPos{buttonSize.x * buttonIndex, 0};
+			const Vector2i buttonPos{buttonSize.x * buttonIndex, 25};
 
 			addBuildButton(UiButton(name, colour, buttonPos, buttonSize, *this));
 
@@ -28,8 +28,13 @@ namespace ui {
 		buildButtons.push_back(button);
 	}
 
-	bool UiBuildBar::isHovered(const Vector2i mousePos) const {
-		return background.getGlobalBounds().contains(static_cast<Vector2f>(mousePos));
+	string_view UiBuildBar::isHovered(const Vector2i mousePos) const {
+		for (UiButton button : buildButtons) {
+			if (!button.isHovered(mousePos).empty()) {
+				return button.getId();
+			}
+		}
+		return background.getGlobalBounds().contains(static_cast<Vector2f>(mousePos)) ? getId() : "";
 	}
 
 	void UiBuildBar::draw(RenderTarget& target) const {

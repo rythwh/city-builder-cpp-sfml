@@ -1,5 +1,7 @@
 #pragma once
 
+#include "sim/building_prefab.hpp"
+
 namespace core {
 	class StateManager
 	{
@@ -11,21 +13,27 @@ namespace core {
 
 		enum class Mode {
 			None,
-			Road,
 			Build,
 			Demolish
 		};
 
-		StateManager() : currentPlayState(PlayState::Playing), currentMode(Mode::None) {}
+		StateManager() : currentPlayState(PlayState::Playing), currentMode(Mode::None), selectedBuildingCategory() {}
 
-		PlayState getPlayState() const { return currentPlayState; }
-		void setPlayState(PlayState newPlayState) { currentPlayState = newPlayState; }
+		[[nodiscard]] PlayState getPlayState() const { return currentPlayState; }
+		void setPlayState(const PlayState newPlayState) { currentPlayState = newPlayState; }
 
-		Mode getMode() const { return currentMode; }
-		void setMode(Mode newMode) { currentMode = newMode; }
+		[[nodiscard]] Mode getMode() const { return currentMode; }
+		void setMode(const Mode newMode) { currentMode = newMode; }
+
+		[[nodiscard]] sim::BuildingCategoryEntry getSelectedBuildingCategory() const { return selectedBuildingCategory; }
+		void setSelectedBuildingCategory(const sim::BuildingCategoryEntry& buildingCategory) {
+			selectedBuildingCategory = buildingCategory;
+		}
 
 	private:
 		PlayState currentPlayState;
 		Mode currentMode;
+
+		sim::BuildingCategoryEntry selectedBuildingCategory;
 	};
 }

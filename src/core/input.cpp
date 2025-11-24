@@ -3,7 +3,6 @@
 #include <optional>
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include <SFML/System/Time.hpp>
 
 #include "state.hpp"
 #include "constants.hpp"
@@ -11,9 +10,13 @@
 #include "world/map.hpp"
 #include "world/camera.hpp"
 #include "core/time.hpp"
+#include "ui/ui_manager.hpp"
+#include "sim/building_prefab.hpp"
 
 using namespace sf;
 using namespace world;
+using namespace ui;
+using namespace std;
 
 namespace core {
 
@@ -22,25 +25,28 @@ namespace core {
 		RenderWindow& window,
 		Camera& camera,
 		Map& map,
-		TimeManager& timeManager
+		TimeManager& timeManager,
+		UiManager& uiManager
 	) : 
 		stateManager(stateManager),
 		window(window),
 		camera(camera),
 		map(map),
-		timeManager(timeManager)
+		timeManager(timeManager),
+		uiManager(uiManager)
 	{
-		update(std::nullopt);
+		update(nullopt);
 	};
 
-	void InputManager::update(std::optional<Event> inputEvent) {
+	void InputManager::update(const optional<Event>& inputEvent) const {
 		processMovementInput();
 		processInput(inputEvent);
+		processMouseClick(inputEvent);
 	}
 
-	void InputManager::processMovementInput() {
-		float deltaTime = timeManager.getDeltaTime();
-		float zoom = camera.getZoom();
+	void InputManager::processMovementInput() const {
+		const float deltaTime = timeManager.getDeltaTime();
+		const float zoom = camera.getZoom();
 
 		Vector2f movementDelta{0.f, 0.f};
 		if (Keyboard::isKeyPressed(Keyboard::Scan::W)) {
@@ -59,7 +65,7 @@ namespace core {
 		camera.move(movementDelta);
 	}
 
-	void InputManager::processInput(std::optional<Event> inputEvent) {
+	void InputManager::processInput(const optional<Event>& inputEvent) const {
 		if (const auto* keyPressed = inputEvent->getIf<Event::KeyPressed>())
 		{
 			switch (keyPressed->scancode)
@@ -67,21 +73,7 @@ namespace core {
 			case Keyboard::Scan::Escape:
 				window.close();
 				break;
-			case Keyboard::Scan::R:
-				if (stateManager.getMode() == StateManager::Mode::Road) {
-					stateManager.setMode(StateManager::Mode::None);
-				} else {
-					stateManager.setMode(StateManager::Mode::Road);
-				}
-				break;
 			case Keyboard::Scan::B:
-				if (stateManager.getMode() == StateManager::Mode::Build) {
-					stateManager.setMode(StateManager::Mode::None);
-				} else {
-					stateManager.setMode(StateManager::Mode::Build);
-				}
-				break;
-			case Keyboard::Scan::Z:
 				if (stateManager.getMode() == StateManager::Mode::Demolish) {
 					stateManager.setMode(StateManager::Mode::None);
 				} else {
@@ -94,38 +86,43 @@ namespace core {
 		{
 			if (mouseWheel->wheel == Mouse::Wheel::Vertical)
 			{
-				float delta = mouseWheel->delta;
-				float newZoom = camera.getZoom() - delta * 0.1f;
+				const float delta = mouseWheel->delta;
+				const float newZoom = camera.getZoom() - delta * 0.1f;
 				camera.setZoom(newZoom);
 			}
 		}
-		
 	}
 
-	void InputManager::processMouseClick(std::optional<Event> inputEvent) {
+	void InputManager::processMouseClick(const optional<Event>& inputEvent) const {
 		if (const auto* mouseButton = inputEvent->getIf<Event::MouseButtonPressed>())
 		{
 			if (mouseButton->button == Mouse::Button::Left)
 			{
-				Tile* tilePtr = getMouseHoverTile();
+				string_view elementId = uiManager.clickedElement(Mouse::getPosition(window));
+				if (!elementId.empty()) {
+					for (auto& buildingCategory : sim::buildingCategories) {
+						if (elementId == buildingCategory.name) {
+							stateManager.setMode(StateManager::Mode::Build);
+							stateManager.setSelectedBuildingCategory(buildingCategory);
+							cout << buildingCategory.name << endl;
+							return;
+						}
+					}
+				}
+
+				const Tile* tilePtr = getMouseHoverTile();
 				if (tilePtr == nullptr) {
 					return;
 				}
-				Tile& tile = *tilePtr;
+				const Tile& tile = *tilePtr;
 
 				// Handle left-click on tile based on current mode
 					switch (stateManager.getMode()) {
-						case StateManager::Mode::Road:
-							std::cout << "Place road at (" << tile.getPosition().x << ", " << tile.getPosition().y << ")" << std::endl;
-							break;
-						case StateManager::Mode::Build:
-							std::cout << "Place building at (" << tile.getPosition().x << ", " << tile.getPosition().y << ")" << std::endl;
-							break;
 						case StateManager::Mode::Demolish:
-							std::cout << "Demolish object at (" << tile.getPosition().x << ", " << tile.getPosition().y << ")" << std::endl;
+							cout << "Demolish object at (" << tile.getPosition().x << ", " << tile.getPosition().y << ")" << endl;
 							break;
 						default:
-							std::cout << "Clicked on tile at (" << tile.getPosition().x << ", " << tile.getPosition().y << ")" << std::endl;
+							cout << "Clicked on tile at (" << tile.getPosition().x << ", " << tile.getPosition().y << ")" << endl;
 							break;
 					}
 			}
@@ -134,15 +131,11 @@ namespace core {
 
 	const Tile* InputManager::getMouseHoverTile() const
 	{
-		if (cachedMouseHoverTile != nullptr) {
-			return cachedMouseHoverTile;
-		}
+		const Vector2i mousePos = Mouse::getPosition(window);
+		const Vector2f worldPos = window.mapPixelToCoords(mousePos, camera.createView(window));
 
-		Vector2i mousePos = Mouse::getPosition(window);
-		Vector2f worldPos = window.mapPixelToCoords(mousePos, camera.createView(window));
-
-		int tileX = static_cast<int>(worldPos.x) / TILE_SIZE;
-		int tileY = static_cast<int>(worldPos.y) / TILE_SIZE;
+		const int tileX = static_cast<int>(worldPos.x) / TILE_SIZE;
+		const int tileY = static_cast<int>(worldPos.y) / TILE_SIZE;
 
 		// Clamp to map bounds
 		if (tileX < 0) {

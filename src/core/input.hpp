@@ -7,9 +7,11 @@
 #include "world/map.hpp"
 #include "world/camera.hpp"
 #include "core/time.hpp"
+#include "ui/ui_manager.hpp"
 
 using namespace sf;
 using namespace world;
+using namespace ui;
 
 namespace core {
 class InputManager {
@@ -20,28 +22,24 @@ public:
 		RenderWindow& window,
 		Camera& camera,
 		Map& map,
-		TimeManager& timeManager
+		TimeManager& timeManager,
+		UiManager& uiManager
 	);
 
-	void update(std::optional<Event> inputEvent);
+	void update(const std::optional<Event> &inputEvent) const;
 
-	const Tile* getMouseHoverTile() const;
+	[[nodiscard]] const Tile* getMouseHoverTile() const;
 	Tile* getMouseHoverTile();
-
-	void reset() {
-		cachedMouseHoverTile = nullptr;
-	}
 private:
-	Tile* cachedMouseHoverTile = nullptr;
-
 	StateManager& stateManager;
 	RenderWindow& window;
 	Camera& camera;
 	Map& map;
 	TimeManager& timeManager;
+	UiManager& uiManager;
 
-	void processMovementInput();
-	void processInput(std::optional<Event> inputEvent);
-	void processMouseClick(std::optional<Event> inputEvent);
+	void processMovementInput() const;
+	void processInput(const std::optional<Event> &inputEvent) const;
+	void processMouseClick(const std::optional<Event> &inputEvent) const;
 };
 }

@@ -16,8 +16,13 @@ namespace ui {
 
 		void addBuildButton(const UiButton& button);
 
-		bool isHovered(Vector2i mousePos) const override;
+		string_view isHovered(Vector2i mousePos) const override;
 		void draw(RenderTarget& target) const override;
+
+		[[nodiscard]] string_view getId() const override {
+			return "BuildBar";
+		}
+
 	private:
 		vector<UiButton> buildButtons;
 	};

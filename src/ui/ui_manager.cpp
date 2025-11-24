@@ -23,4 +23,15 @@ namespace ui {
 			element->draw(target);
 		}
 	}
+
+	string_view UiManager::clickedElement(Vector2i mousePos) const {
+		for (const std::unique_ptr<UiElement>& element : elements) {
+			string_view elementId = element->isHovered(mousePos);
+			if (!elementId.empty()) {
+				return elementId;
+			}
+		}
+		return "";
+	}
+
 }
