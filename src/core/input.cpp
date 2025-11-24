@@ -120,7 +120,7 @@ namespace core {
 				}
 				const Tile& tile = *tilePtr;
 
-				if (stateManager.getMode() == StateManager::Mode::Build && tile.getType() == TileType::Ground) {
+				if (stateManager.getMode() == StateManager::Mode::Build && tile.getType() == TileType::Ground && tile.getBuilding() == nullptr) {
 					for (const BuildingPrefab& prefab : buildingPrefabs) {
 						if (prefab.buildingCategory.buildingCategory == stateManager.getSelectedBuildingCategory().buildingCategory) {
 							Building building(prefab, BuildingDensity::Low, BuildingLevel::Level1);
@@ -128,6 +128,10 @@ namespace core {
 							return;
 						}
 					}
+				}
+
+				if (stateManager.getMode() == StateManager::Mode::Demolish && tile.getBuilding() != nullptr) {
+					city.removeBuilding(const_cast<Tile&>(tile));
 				}
 			}
 		}
