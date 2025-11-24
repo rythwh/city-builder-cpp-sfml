@@ -30,7 +30,6 @@ namespace render {
 		window.clear();
 		window.setView(camera.createView(window));
 		drawMap();
-		drawBuildings();
 		drawMouseHoverTile();
 		drawUi();
 		window.display();
@@ -39,11 +38,14 @@ namespace render {
 	/// @attention: Only draw objects in world-space
 	void Renderer::drawMap() {
 
-		const float tileSize = TILE_SIZE; // Size of each tile in pixels
-		RectangleShape tileShape(Vector2f(tileSize, tileSize));
+		RectangleShape tileShape(Vector2f(TILE_SIZE, TILE_SIZE));
+		RectangleShape buildingShape(Vector2f(TILE_SIZE, TILE_SIZE));
 
 		for (int y = 0; y < map.getSize().y; ++y) {
 			for (int x = 0; x < map.getSize().x; ++x) {
+
+				// Draw tile
+
 				const Tile* tilePtr = map.getTile(x, y);
 				if (tilePtr == nullptr) {
 					continue;
@@ -63,11 +65,24 @@ namespace render {
 				}
 
 				tileShape.setPosition({
-					static_cast<float>(x) * tileSize,
-					static_cast<float>(y) * tileSize
+					static_cast<float>(x) * TILE_SIZE,
+					static_cast<float>(y) * TILE_SIZE
 				});
 
 				window.draw(tileShape);
+
+				// Draw building
+
+				const Building* buildingPtr = tile.getBuilding();
+				if (buildingPtr == nullptr) {
+					continue;
+				}
+				const Building& building = *buildingPtr;
+
+				buildingShape.setFillColor(building.prefab.buildingCategory.color * Color(0,0,0,static_cast<int>(building.level)));
+				buildingShape.setPosition(tileShape.getPosition());
+
+				window.draw(buildingShape);
 			}
 		}
 	}
@@ -80,10 +95,6 @@ namespace render {
 			(height + 2) * (255 / 4.f),
 			(height + 2) * (255 / 4.f),
 			(height + 2) * (255 / 4.f)));
-	}
-	
-	void Renderer::drawBuildings() {
-		// Implementation for drawing buildings
 	}
 
 	void Renderer::drawMouseHoverTile() const {

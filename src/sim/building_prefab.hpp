@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
+
 #include <array>
 #include <string>
 
@@ -36,7 +38,7 @@ namespace sim {
 		Color color;
 	};
 
-	constexpr array<BuildingCategoryEntry, static_cast<int>(BuildingCategory::Count)> buildingCategories{
+	inline array<BuildingCategoryEntry, static_cast<int>(BuildingCategory::Count)> buildingCategories{
 	{
 		{ BuildingCategory::Residential,"Residential", Color( 46, 204, 113) },
 		{ BuildingCategory::Commercial,"Commercial", Color( 52, 152, 219) },
@@ -54,7 +56,9 @@ namespace sim {
 	{
 		Low,
 		Medium,
-		High
+		High,
+
+		Count // Count helper
 	};
 
 	enum class BuildingLevel
@@ -65,11 +69,47 @@ namespace sim {
 	};
 
 	struct BuildingPrefab {
-		const int id;
-		string name;
-		BuildingCategory category;
-
-		float cost;
+		BuildingCategoryEntry buildingCategory;
+		BuildingDensity density;
+		int cost;
 		int capacity;
 	};
+
+	inline array<BuildingPrefab, static_cast<int>(BuildingCategory::Count) * static_cast<int>(BuildingDensity::Count)> buildingPrefabs{{
+		{ buildingCategories[static_cast<int>(BuildingCategory::Residential)], BuildingDensity::Low, 100, 4 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Residential)], BuildingDensity::Medium, 1000, 40 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Residential)], BuildingDensity::High, 10000, 400 },
+
+		{ buildingCategories[static_cast<int>(BuildingCategory::Commercial)], BuildingDensity::Low, 70, 10 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Commercial)], BuildingDensity::Medium, 700, 50 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Commercial)], BuildingDensity::High, 7000, 150 },
+
+		{ buildingCategories[static_cast<int>(BuildingCategory::Industrial)], BuildingDensity::Low, 30, 20 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Industrial)], BuildingDensity::Medium, 300, 50 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Industrial)], BuildingDensity::High, 3000, 200 },
+
+		{ buildingCategories[static_cast<int>(BuildingCategory::Office)], BuildingDensity::Low, 30, 20 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Office)], BuildingDensity::Medium, 300, 50 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Office)], BuildingDensity::High, 3000, 200 },
+
+		{ buildingCategories[static_cast<int>(BuildingCategory::Park)], BuildingDensity::Low, 10, 5 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Park)], BuildingDensity::Medium, 500, 30 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Park)], BuildingDensity::High, 2000, 100 },
+
+		{ buildingCategories[static_cast<int>(BuildingCategory::Police)], BuildingDensity::Low, 500, 25 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Police)], BuildingDensity::High, 5000, 100 },
+
+		{ buildingCategories[static_cast<int>(BuildingCategory::FireStation)], BuildingDensity::Low, 500, 25 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::FireStation)], BuildingDensity::High, 5000, 100 },
+
+		{ buildingCategories[static_cast<int>(BuildingCategory::Hospital)], BuildingDensity::Low, 500, 25 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Hospital)], BuildingDensity::High, 5000, 100 },
+
+		{ buildingCategories[static_cast<int>(BuildingCategory::School)], BuildingDensity::Low, 500, 300 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::School)], BuildingDensity::High, 5000, 2000 },
+
+		{ buildingCategories[static_cast<int>(BuildingCategory::Road)], BuildingDensity::Low, 20, 2 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Road)], BuildingDensity::Medium, 80, 4 },
+		{ buildingCategories[static_cast<int>(BuildingCategory::Road)], BuildingDensity::High, 800, 6 },
+	}};
 }

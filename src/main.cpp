@@ -9,11 +9,13 @@
 #include "core/input.hpp"
 #include "core/state.hpp"
 #include "core/time.hpp"
+#include "sim/city.hpp"
 
 using namespace world;
 using namespace render;
 using namespace sf;
 using namespace core;
+using namespace sim;
 
 int main()
 {
@@ -24,12 +26,13 @@ int main()
 	constexpr Vector2i mapSize{MAP_WIDTH, MAP_HEIGHT};
 
 	Map map(mapSize);
+	City city{};
 	Camera camera(mapSize);
 
 	StateManager stateManager{};
 	TimeManager timeManager{};
 	UiManager uiManager(window.getSize());
-	InputManager inputManager(stateManager, window, camera, map, timeManager, uiManager);
+	InputManager inputManager(stateManager, window, camera, map, timeManager, uiManager, city);
 
 	Renderer renderer(window, map, camera, inputManager, uiManager);
 

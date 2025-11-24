@@ -7,11 +7,13 @@
 #include "world/map.hpp"
 #include "world/camera.hpp"
 #include "core/time.hpp"
+#include "sim/city.hpp"
 #include "ui/ui_manager.hpp"
 
 using namespace sf;
 using namespace world;
 using namespace ui;
+using namespace sim;
 
 namespace core {
 class InputManager {
@@ -23,7 +25,8 @@ public:
 		Camera& camera,
 		Map& map,
 		TimeManager& timeManager,
-		UiManager& uiManager
+		UiManager& uiManager,
+		City& city
 	);
 
 	void update(const std::optional<Event> &inputEvent) const;
@@ -37,6 +40,7 @@ private:
 	Map& map;
 	TimeManager& timeManager;
 	UiManager& uiManager;
+	City& city;
 
 	void processMovementInput() const;
 	void processInput(const std::optional<Event> &inputEvent) const;

@@ -32,7 +32,6 @@ namespace render {
 
 		void drawMap();
 		void visualiseHeightmap(RectangleShape& tileShape, const Tile& tile);
-		void drawBuildings();
 		void drawMouseHoverTile() const;
 
 		void drawUi() const;

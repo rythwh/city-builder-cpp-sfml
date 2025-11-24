@@ -12,11 +12,13 @@
 #include "core/time.hpp"
 #include "ui/ui_manager.hpp"
 #include "sim/building_prefab.hpp"
+#include "sim/city.hpp"
 
 using namespace sf;
 using namespace world;
 using namespace ui;
 using namespace std;
+using namespace sim;
 
 namespace core {
 
@@ -26,14 +28,16 @@ namespace core {
 		Camera& camera,
 		Map& map,
 		TimeManager& timeManager,
-		UiManager& uiManager
+		UiManager& uiManager,
+		City& city
 	) : 
 		stateManager(stateManager),
 		window(window),
 		camera(camera),
 		map(map),
 		timeManager(timeManager),
-		uiManager(uiManager)
+		uiManager(uiManager),
+		city(city)
 	{
 		update(nullopt);
 	};
@@ -116,15 +120,15 @@ namespace core {
 				}
 				const Tile& tile = *tilePtr;
 
-				// Handle left-click on tile based on current mode
-					switch (stateManager.getMode()) {
-						case StateManager::Mode::Demolish:
-							cout << "Demolish object at (" << tile.getPosition().x << ", " << tile.getPosition().y << ")" << endl;
-							break;
-						default:
-							cout << "Clicked on tile at (" << tile.getPosition().x << ", " << tile.getPosition().y << ")" << endl;
-							break;
+				if (stateManager.getMode() == StateManager::Mode::Build && tile.getType() == TileType::Ground) {
+					for (BuildingPrefab prefab : buildingPrefabs) {
+						if (prefab.buildingCategory.buildingCategory == stateManager.getSelectedBuildingCategory().buildingCategory) {
+							Building building = Building(prefab, BuildingDensity::Low, BuildingLevel::Level1);
+							city.placeBuilding(building, const_cast<Tile &>(tile));
+							return;
+						}
 					}
+				}
 			}
 		}
 	}
